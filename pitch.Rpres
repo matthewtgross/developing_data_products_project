@@ -1,32 +1,32 @@
+pitch
+========================================================
+author: Matt Gross
+date: `r Sys.Date()`
+autosize: true
+
+Slide 1 - Why
+========================================================
+
+This is my Rstudio Presentation pitch for my slidify app
+
+- Haven't you always wanted to be rich?
+- Do you have a lucky number?
+- This app can help you choose the optimal lottery numbers based on your favorite number
+
+Slide 2 - How
+========================================================
+
+The app begins assuming that the end user's favorite number is 7.  If the user's favorite number is different than 7, the user enters that number in the text fields in the top left text box, then adjusts the slider bar that limits the minimum occurance of historical powerball numbers.  The app then downloads all historical numbers from the powerball and filters all number sets based on those that include the favorite number.  From this limited set the app suggests the top number occurances from all number sets which historically included the user's favorite number.  This gives you the highest probability of winning given your favorite number is selected.
+
+```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+
 library(shiny)
 library(lubridate)
 library(ggplot2)
 library(dplyr)
 library(plyr)
 
-
-# Define server logic required to draw a histogram
-shinyServer(function(input, output) {
-  
-  # Expression that generates a histogram. The expression is
-  # wrapped in a call to renderPlot to indicate that:
-  #
-  #  1) It is "reactive" and therefore should re-execute automatically
-  #     when inputs change
-  #  2) Its output type is a plot
-
-  # You can access the value of the widget with input$text, e.g.
-  output$value <- renderPrint({ input$text })
-    
-  output$distPlot <- renderPlot({
-    #x    <- faithful[, 2]  # Old Faithful Geyser data
-    #bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    # draw the histogram with the specified number of bins
-    #hist(x, breaks = bins, col = 'darkgray', border = 'white')
-
-    
-    file <- "http://www.powerball.com/powerball/winnums-text.txt"
+file <- "http://www.powerball.com/powerball/winnums-text.txt"
     fileURL <- url(file)
     data <- read.fwf(file = file, skip = 1, widths = c(10,-2,2,-2,2,-2,2,-2,2,-2,2,-2,2,-2,2))
     unlink(file)
@@ -73,9 +73,26 @@ shinyServer(function(input, output) {
     
     fn <- mutate(fn, top_n = ifelse(ttl >= 193,1,0))
     
-    fn <- filter(fn,ttl > input$bins)
+    fn <- filter(fn,ttl > 140)
     
+```
+
+
+Slide 3 - Proof
+========================================================
+
+Assume my favorite number is 7:
+
+```{r}
     ggplot(fn, aes(x=factor(numbers), y=ttl,fill=factor(top_n))) + geom_bar(stat="identity")
-    
-  })
-})
+```
+
+Slide 4 : Make It Happen
+========================================================
+
+Go to the store with your optimal numbers and buy lottery tickets.
+
+Slide 5 : Win!
+========================================================
+
+Win, retire and collect your money!
